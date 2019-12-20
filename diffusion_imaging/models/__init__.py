@@ -1,6 +1,6 @@
 from .models import (
-    Model,
-    FreeWaterTensorModel
+    FreeWaterTensorModel,
+    NODDIModel
 )
 
-__all__ = ["Model", "FreeWaterTensorModel"]
+__all__ = ["FreeWaterTensorModel", "NODDIModel"]

@@ -55,15 +55,16 @@ class HCPLocalHandler(HandlerBase):
 
         # The group is the group associated with the specific 'dir*'
         # this includes both LR and RL orientations
+        print(filtered_files) 
         for file in filtered_files:
-            if "data" in file:
+            if "bvec" in os.path.basename(file):
+                bvecs_file_path = file
+            elif "bval" in os.path.basename(file):
+                bvals_file_path = file
+            elif os.path.basename(file).endswith('.nii.gz'):
                 dwi_data = self._load_dwi(file)
                 image = dwi_data.get_data()
                 aff = dwi_data.affine
-            elif "bvecs" in file:
-                bvecs_file_path = file
-            elif "bvals" in file:
-                bvals_file_path = file
         
         # Take the 
         gtab = gradient_table(bvals_file_path, bvecs_file_path)
@@ -78,16 +79,33 @@ class HCPLocalHandler(HandlerBase):
         
         patients = []
         for patient in os.listdir(self.patient_directory):
-            p = Patient(patient_number=int(patient))
+            p = Patient(patient_number=patient)
             
             filtered_files = self._get_files(os.path.join(self.patient_directory,
                                                          patient))
-            
+            p.directory = os.path.join(self.patient_directory, patient) 
             p.mri = self._make_mri(filtered_files)
             patients.append(p)
             
         return patients
         
+
+class DMIPYLocalHandler(HCPLocalHandler):
+    def __init__(self, config):
+        self.config = config
+        self.patient_directory = config['patient_directory']
+
+    def _get_files(self, path=None):
+	
+        base = os.path.join(self.patient_directory, path)
+        files = os.listdir(base)
+        files_full_dir = []
+
+        for file in files:
+            files_full_dir.append(os.path.join(self.patient_directory, path, file))
+
+        return files_full_dir
+
 
 class LocalHandler(HandlerBase):
     """

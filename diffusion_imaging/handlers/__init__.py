@@ -1,4 +1,5 @@
 from .handlers import (
+    DMIPYLocalHandler,
     Handler,
     HCPLocalHandler,
     HandlerBase

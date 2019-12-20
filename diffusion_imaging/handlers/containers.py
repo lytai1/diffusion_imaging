@@ -30,6 +30,7 @@ class Patient:
     def __init__(self, patient_number, mri=None):
         self.patient_number = patient_number
         self.mri = mri
+        self.directory = ""
         
     def __str__(self):
         return f"Patient(parient_number = {self.patient_number})"
