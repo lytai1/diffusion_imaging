@@ -10,10 +10,13 @@ class MRI:
         year (str): The given year?
         orientation (str): Possible use 
     """
-    def __init__(self, nifti_image, gradient_table):
+    def __init__(self, nifti_image, gradient_table, label):
+        
         self.nifti_image = nifti_image
-        self.data = self.nifti_image.get_data()
+        self.label = label
         self.gradient_table = gradient_table
+
+        self.data = self.nifti_image.get_data()
         self.scheme = gtab_dipy2dmipy(self.gradient_table)
         self._result = None
         

@@ -5,6 +5,9 @@ import nibabel as nib
 import os
 import numpy as np
 from itertools import groupby
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .containers import Patient, MRI
 
@@ -27,6 +30,7 @@ class HCPLocalHandler(HandlerBase):
         self.config = config
         self.patient_directory = config['patient_directory']
         self.sub_directory = os.path.join("T1w", "Diffusion")
+        self.label = "hcp"
         
     def _get_files(self, path):
         
@@ -71,7 +75,7 @@ class HCPLocalHandler(HandlerBase):
         
         nifti_image = nib.Nifti1Image(image, aff)
         
-        mri = MRI(nifti_image, gtab)
+        mri = MRI(nifti_image, gtab, self.label)
         
         return mri
         
@@ -94,10 +98,14 @@ class DMIPYLocalHandler(HCPLocalHandler):
     def __init__(self, config):
         self.config = config
         self.patient_directory = config['patient_directory']
+        self.label = "andi"
 
     def _get_files(self, path=None):
-	
+
+        logger.info(self.patient_directory)
+        logger.info(path)
         base = os.path.join(self.patient_directory, path)
+        logger.info(base) 
         files = os.listdir(base)
         files_full_dir = []
 
