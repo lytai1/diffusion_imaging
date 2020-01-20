@@ -74,5 +74,15 @@ class NODDIModel(DMIPYModel):
         return fitted_model
 
 
+class BallStickModel(DMIPYModel):
 
+    def __init__(self):
+        self.ball = gaussian_models.G1Ball()
+        self.stick = cylinder_models.C1Stick()
+        self.model = MultiCompartmentModel(models=[self.stick, self.ball])
+
+    def fit(self, scheme, data, mask):
+
+        self.model.fit(scheme, data, mask=data[..., 0]>0)
+        return self.model
      
