@@ -102,10 +102,7 @@ class DMIPYLocalHandler(HCPLocalHandler):
 
     def _get_files(self, path=None):
 
-        logger.info(self.patient_directory)
-        logger.info(path)
         base = os.path.join(self.patient_directory, path)
-        logger.info(base) 
         files = os.listdir(base)
         files_full_dir = []
 
