@@ -69,7 +69,7 @@ class NODDIModel(DMIPYModel):
         
         model = self._build_model()
         fitted_model = model.fit(
-            scheme, data, mask=data[..., 0]>0)
+            scheme, data, mask=mask)
         
         return fitted_model
 
@@ -83,6 +83,6 @@ class BallStickModel(DMIPYModel):
 
     def fit(self, scheme, data, mask):
 
-        self.model.fit(scheme, data, mask=data[..., 0]>0)
+        self.model.fit(scheme, data, mask=mask)
         return self.model
      

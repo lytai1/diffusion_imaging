@@ -1,6 +1,7 @@
 from .models import (
     FreeWaterTensorModel,
-    NODDIModel
+    NODDIModel,
+    BallStickModel
 )
 
-__all__ = ["FreeWaterTensorModel", "NODDIModel"]
+__all__ = ["FreeWaterTensorModel", "NODDIModel", "BallStickModel"]

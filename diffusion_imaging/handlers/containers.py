@@ -18,6 +18,7 @@ class MRI:
 
         self.data = self.nifti_image.get_data()
         self.scheme = gtab_dipy2dmipy(self.gradient_table)
+        print(self.scheme.b0_mask.shape)
         self._result = None
         
     @property
