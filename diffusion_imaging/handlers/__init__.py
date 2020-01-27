@@ -2,10 +2,14 @@ from .handlers import (
     DMIPYLocalHandler,
     Handler,
     HCPLocalHandler,
+    LocalHandler,
     HandlerBase
 )
 
 from .containers import (
     Patient,
-    MRI
+    MRI,
+    HPCMRI,
+    ADNIMRI,
+    RosenMRI
 )
