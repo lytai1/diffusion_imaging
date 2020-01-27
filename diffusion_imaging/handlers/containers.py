@@ -63,7 +63,7 @@ class RosenMRI(MRI):
     def pull_axial_slices(self,  start, end):
         return self.data[:, :, start : end, :]
 
-    def make_middle_slice(self):
+    def pull_middle_slice(self):
         slice_index = self.data.shape[2] // 2
         return data[:, :, slice_index : slice_index + 1, :]
 

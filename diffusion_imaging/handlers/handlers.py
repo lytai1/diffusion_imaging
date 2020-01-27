@@ -9,7 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from .containers import Patient, MRI
+from .containers import Patient, MRI, build_mri
 
 
 class HandlerBase(ABC):
@@ -82,6 +82,7 @@ class LocalHandler(HandlerBase):
         patient = Patient()
         filtered_files = self._get_files(self.patient_directory)
         patient.directory = self.patient_directory
+        _, patient.patient_number = os.path.split(self.patient_directory)
         patient.mri = self._make_mri(filtered_files)
         
         return patient
