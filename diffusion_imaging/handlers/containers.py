@@ -18,20 +18,58 @@ class MRI:
 
         self.data = self.nifti_image.get_data()
         self.scheme = gtab_dipy2dmipy(self.gradient_table)
-        print(self.scheme.b0_mask.shape)
-        self._result = None
-        
-    @property
-    def result(self):
-        return self._result
+
+
+def build_mri(nifti_image, gradient_table, label):
+    switch = {
+        "hcp": HCPMRI,
+        "adni": ADNIMRI,
+        "rosen": RosenMRI
+    }
+
+    return switch[label](nifti_image, gradient_table, label)
+
+class HCPMRI(MRI):
+
+    def __init__(self, nifti_image, gradient_table, label):
+        super(HCPMRI, self).__init__(nifti_image, gradient_table, label)
+
+    def pull_axial_slices(self, start, end): # this might not be axial
+        return self.data[:, start : end]
+
+    def pull_axial_slices(self):
+        slice_index = self.data.shape[1] // 2
+        return data[:, slice_index : slice_index + 1]
     
-    @result.setter
-    def result(self, res):
-        self._result = res
+
+class ADNIMRI(MRI):
+
+    def __init__(self, nifti_image, gradient_table, label):
+        super(ADNIMRI, self).__init__(nifti_image, gradient_table, label)
+
+    def pull_axial_slices(self, start, end):
+        return self.data[:, :, start : end, 0]
+
+    def pull_middle_slice(self):
+        slice_index = self.data.shape[1] // 2
+        return data[:, slice_index : slice_index + 1]
+
+
+class RosenMRI(MRI):
+
+    def __init__(self, nifti_image, gradient_table, label):
+        super(RosenMRI, self).__init__(nifti_image, gradient_table, label)
+
+    def pull_axial_slices(self,  start, end):
+        return self.data[:, :, start : end, :]
+
+    def make_middle_slice(self):
+        slice_index = self.data.shape[2] // 2
+        return data[:, :, slice_index : slice_index + 1, :]
 
 class Patient:
     
-    def __init__(self, patient_number, mri=None):
+    def __init__(self, patient_number=None, mri=None):
         self.patient_number = patient_number
         self.mri = mri
         self.directory = ""
