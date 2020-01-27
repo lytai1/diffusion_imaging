@@ -9,7 +9,7 @@ from .handlers import (
 from .containers import (
     Patient,
     MRI,
-    HPCMRI,
+    HCPMRI,
     ADNIMRI,
     RosenMRI
 )
