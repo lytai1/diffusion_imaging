@@ -11,5 +11,6 @@ from .containers import (
     MRI,
     HCPMRI,
     ADNIMRI,
-    RosenMRI
+    RosenMRI,
+    build_mri
 )
