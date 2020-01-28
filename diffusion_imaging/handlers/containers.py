@@ -35,11 +35,11 @@ class HCPMRI(MRI):
         super(HCPMRI, self).__init__(nifti_image, gradient_table, label)
 
     def pull_axial_slices(self, start, end): # this might not be axial
-        return self.data[:, start : end]
+        return self.data[:, :, start : end, :]
 
-    def pull_middle_slice(self):
-        slice_index = self.data.shape[1] // 2
-        return data[:, slice_index : slice_index + 1]
+    def pull_axial_middle_slice(self):
+        slice_index = self.data.shape[2] // 2
+        return self.data[:, :, slice_index : slice_index + 1, :]
     
 
 class ADNIMRI(MRI):
@@ -52,7 +52,7 @@ class ADNIMRI(MRI):
 
     def pull_middle_slice(self):
         slice_index = self.data.shape[1] // 2
-        return data[:, slice_index : slice_index + 1]
+        return self.data[:, slice_index : slice_index + 1]
 
 
 class RosenMRI(MRI):
@@ -63,9 +63,9 @@ class RosenMRI(MRI):
     def pull_axial_slices(self,  start, end):
         return self.data[:, :, start : end, :]
 
-    def pull_middle_slice(self):
+    def pull_axial_middle_slice(self):
         slice_index = self.data.shape[2] // 2
-        return data[:, :, slice_index : slice_index + 1, :]
+        return self.data[:, :, slice_index : slice_index + 1, :]
 
 class Patient:
     
