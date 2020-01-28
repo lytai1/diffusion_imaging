@@ -37,7 +37,7 @@ class HCPMRI(MRI):
     def pull_axial_slices(self, start, end): # this might not be axial
         return self.data[:, start : end]
 
-    def pull_axial_slices(self):
+    def pull_middle_slice(self):
         slice_index = self.data.shape[1] // 2
         return data[:, slice_index : slice_index + 1]
     
