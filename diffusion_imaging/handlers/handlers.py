@@ -59,6 +59,7 @@ class LocalHandler(HandlerBase):
         # The group is the group associated with the specific 'dir*'
         # this includes both LR and RL orientations
         print(filtered_files)
+        mask_file_path, mask = None, None
         for file in filtered_files:
             if "bvec" in os.path.basename(file):
                 bvecs_file_path = file

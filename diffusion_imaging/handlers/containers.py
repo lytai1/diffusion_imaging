@@ -1,5 +1,5 @@
 from dmipy.core.acquisition_scheme import gtab_dipy2dmipy
-from dipy.segment.mask import median_otsu
+from dipy.segment.mask import median_otsu, bounding_box
 
 class MRI:
     """
@@ -21,13 +21,24 @@ class MRI:
         self.scheme = gtab_dipy2dmipy(self.gradient_table)
 
         if mask is not None: 
-            self.mask = mask
+            self.mask = mask.get_data()
         else:
             self.make_mask()
 
+        self.bound_data()
+
     def make_mask(self, *args, **kwargs):
-        if not self.mask is None:
-            self.mask, _ = median_otsu(self.data[..., 0], kwargs)
+        _, self.mask = median_otsu(self.data[..., 0], kwargs)
+
+    def bound_data(self):
+
+        min_indicies, max_indicies = bounding_box(self.mask)
+
+        min_x, min_y, min_z = min_indicies
+        max_x, max_y, max_z = max_indicies
+
+        self.data = self.data[min_x:max_x, min_y:max_y, min_z:max_z, :]
+        self.mask = self.mask[min_x:max_x, min_y:max_y, min_z:max_z]
 
 
 
