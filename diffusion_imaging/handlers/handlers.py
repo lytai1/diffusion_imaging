@@ -64,6 +64,8 @@ class LocalHandler(HandlerBase):
                 bvecs_file_path = file
             elif "bval" in os.path.basename(file):
                 bvals_file_path = file
+            elif "mask" in os.path.basename(file):
+                mask_file_path = file
             elif os.path.basename(file).endswith('.nii.gz'):
                 dwi_data = self._load_dwi(file)
                 image = dwi_data.get_data()
@@ -71,10 +73,11 @@ class LocalHandler(HandlerBase):
         
         # Take the 
         gtab = gradient_table(bvals_file_path, bvecs_file_path)
-        
+        if mask_file_path is not None: 
+            mask = nib.load(mask_file_path)
         nifti_image = nib.Nifti1Image(image, aff)
         
-        mri = build_mri(nifti_image, gtab, self.label)
+        mri = build_mri(nifti_image, gtab, self.label, mask)
         
         return mri
     
@@ -109,7 +112,7 @@ class HCPLocalHandler(LocalHandler):
     def __init__(self, patient_directory, label='hcp'):
         super(HCPLocalHandler, self).__init__(patient_directory, label)
 
-    def load(self, filters=["nodif_brain_mask.nii.gz"]):
+    def load(self, filters=[]):
 
         return self._make_patient(self.patient_directory, filters)
         
