@@ -1,4 +1,5 @@
 from dmipy.core.acquisition_scheme import gtab_dipy2dmipy
+from dipy.segment.mask import median_otsu
 
 class MRI:
     """
@@ -10,7 +11,7 @@ class MRI:
         year (str): The given year?
         orientation (str): Possible use 
     """
-    def __init__(self, nifti_image, gradient_table, label):
+    def __init__(self, nifti_image, gradient_table, label, mask=None):
         
         self.nifti_image = nifti_image
         self.label = label
@@ -19,20 +20,30 @@ class MRI:
         self.data = self.nifti_image.get_data()
         self.scheme = gtab_dipy2dmipy(self.gradient_table)
 
+        if mask is not None: 
+            self.mask = mask
+        else:
+            self.make_mask()
 
-def build_mri(nifti_image, gradient_table, label):
+    def make_mask(self, *args, **kwargs):
+        if not self.mask is None:
+            self.mask, _ = median_otsu(self.data[..., 0], kwargs)
+
+
+
+def build_mri(nifti_image, gradient_table, label, mask):
     switch = {
         "hcp": HCPMRI,
         "adni": ADNIMRI,
         "rosen": RosenMRI
     }
 
-    return switch[label](nifti_image, gradient_table, label)
+    return switch[label](nifti_image=nifti_image, gradient_table=gradient_table, label=label, mask=mask)
 
 class HCPMRI(MRI):
 
-    def __init__(self, nifti_image, gradient_table, label):
-        super(HCPMRI, self).__init__(nifti_image, gradient_table, label)
+    def __init__(self, nifti_image, gradient_table, label, mask):
+        super(HCPMRI, self).__init__(nifti_image=nifti_image, gradient_table=gradient_table, label=label, mask=mask)
 
     def pull_axial_slices(self, start, end): # this might not be axial
         return self.data[:, :, start : end, :]
@@ -44,11 +55,11 @@ class HCPMRI(MRI):
 
 class ADNIMRI(MRI):
 
-    def __init__(self, nifti_image, gradient_table, label):
-        super(ADNIMRI, self).__init__(nifti_image, gradient_table, label)
+    def __init__(self, nifti_image, gradient_table, label, mask):
+        super(ADNIMRI, self).__init__(nifti_image=nifti_image, gradient_table=gradient_table, label=label, mask=mask)
 
     def pull_axial_slices(self, start, end):
-        return self.data[:, :, start : end, 0]
+        return self.data[:, :, start : end, :]
 
     def pull_middle_slice(self):
         slice_index = self.data.shape[1] // 2
@@ -57,8 +68,8 @@ class ADNIMRI(MRI):
 
 class RosenMRI(MRI):
 
-    def __init__(self, nifti_image, gradient_table, label):
-        super(RosenMRI, self).__init__(nifti_image, gradient_table, label)
+    def __init__(self, nifti_image, gradient_table, label, mask):
+        super(RosenMRI, self).__init__(nifti_image=nifti_image, gradient_table=gradient_table, label=label, mask=mask)
 
     def pull_axial_slices(self,  start, end):
         return self.data[:, :, start : end, :]
@@ -77,3 +88,8 @@ class Patient:
     def __str__(self):
         return f"Patient(parient_number = {self.patient_number})"
     
+class Info:
+
+    def __init__(self, *args, **kwargs):
+        for key, value in kwargs.items():
+            self.__setattr__(key, value)
