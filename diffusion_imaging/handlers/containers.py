@@ -25,7 +25,7 @@ class MRI:
         else:
             self.make_mask()
 
-        self.bound_data()
+        #self.bound_data()
 
     def make_mask(self, *args, **kwargs):
         _, self.mask = median_otsu(self.data[..., 0], kwargs)
@@ -98,9 +98,24 @@ class Patient:
         
     def __str__(self):
         return f"Patient(parient_number = {self.patient_number})"
-    
-class Info:
 
-    def __init__(self, *args, **kwargs):
-        for key, value in kwargs.items():
-            self.__setattr__(key, value)
+
+def build_patient_model(model, patient, model_type):
+    switch = {
+        "NODDI": NODDIPatientModel
+    }
+
+    return switch[model_type](model, patient)
+
+class PatientModel:
+    pass
+
+class NODDIPatientModel(PatientModel):
+
+    def __init__(self, model, patient):
+        self.model = model
+        self.odi = model.fitted_parameters['SD1WatsonDistributed_1_SD1Watson_1_odi']
+        self.patient_num = patient.patient_number
+        self.image = patient.mri.data
+        self.mask = patient.mri.mask
+        self.affine = patient.mri.nifti_image.affine
