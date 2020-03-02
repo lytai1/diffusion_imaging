@@ -28,7 +28,7 @@ class MRI:
         self.bound_data()
 
     def make_mask(self, *args, **kwargs):
-        _, self.mask = median_otsu(self.data[..., 0], kwargs)
+        _, self.mask = median_otsu(self.data, kwargs)
 
     def bound_data(self):
 
